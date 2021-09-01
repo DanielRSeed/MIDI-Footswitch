@@ -3,17 +3,10 @@
 
 #include "Switch.h"
 
-Switch::Switch()
-    : Switch(2, INPUT_PULLUP, EnumSwitchMode::Latching) {};
-
-Switch::Switch(int iPinId)
-    : Switch(iPinId, INPUT_PULLUP, EnumSwitchMode::Momentary){};
-
-Switch::Switch(int iPinId, int iPinMode)
-    : Switch(iPinId, iPinMode, EnumSwitchMode::Momentary){};
-
-Switch::Switch(int iPinId, EnumSwitchMode switchMode)
-    : Switch(iPinId, INPUT_PULLUP, switchMode){};
+#pragma region Constructors
+Switch::Switch(int iPinId) : Switch(iPinId, INPUT_PULLUP, EnumSwitchMode::Momentary){};
+Switch::Switch(int iPinId, int iPinMode) : Switch(iPinId, iPinMode, EnumSwitchMode::Momentary){};
+Switch::Switch(int iPinId, EnumSwitchMode switchMode) : Switch(iPinId, INPUT_PULLUP, switchMode){};
 
 Switch::Switch(int iPinId, int iPinMode, EnumSwitchMode switchMode)
 {
@@ -25,8 +18,9 @@ Switch::Switch(int iPinId, int iPinMode, EnumSwitchMode switchMode)
 
   pinMode(_iPinId, iPinMode);
 };
+#pragma endregion
 
-bool Switch::GetState()
+EnumSwitchMode Switch::GetState()
 {
   return _switchProcessor->GetState(_iPinId);
 }

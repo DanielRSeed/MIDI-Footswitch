@@ -2,7 +2,7 @@
 #define SWITCH_H
 
 #include "Arduino.h"
-#include "./libraries/SwitchProcessor/SwitchProcessor.h"
+#include "./SwitchProcessor.h"
 
 class Switch
 {
@@ -13,13 +13,12 @@ private:
   SwitchProcessor *_switchProcessor;
 
 public:
-  Switch();
   Switch(int iPinId);
   Switch(int iPinId, int iPinMode);
   Switch(int iPinId, int iPinMode, EnumSwitchMode switchMode);
   Switch(int iPinId, EnumSwitchMode switchMode);
 
-  bool GetState();
+  EnumSwitchMode GetState();
   void SetSwitchMode(EnumSwitchMode switchMode);
 };
 #endif

@@ -2,7 +2,7 @@
 #define SWITCHPROCESSOR_H
 
 #include "Arduino.h"
-#include "./libraries/enums/EnumSwitchMode.h"
+#include "./EnumSwitchMode.h"
 
 class SwitchProcessor
 {
@@ -12,15 +12,18 @@ private:
   unsigned long _lLastDebounceTime = 0;
   unsigned long _lDebounceDelay = 50;
   int _iButtonState;
-  bool _bLEDState = false;
+  bool _bSwitchState = false;
+  int _iOnState;
 
 public:
   SwitchProcessor();
+  SwitchProcessor(int iOnState);
   SwitchProcessor(EnumSwitchMode switchMode);
+  SwitchProcessor(EnumSwitchMode switchMode, int iOnState);
 
   void ChangeMode(EnumSwitchMode switchMode);
 
-  bool GetState(int iPin);
+  EnumSwitchMode GetState(int iPin);
 };
 
 #endif
