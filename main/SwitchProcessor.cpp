@@ -3,24 +3,29 @@
 
 #include "SwitchProcessor.h"
 
-SwitchProcessor::SwitchProcessor()
-{
-  _switchMode = EnumSwitchMode::Momentary;
-}
+#pragma region Constructors
 
-SwitchProcessor::SwitchProcessor(EnumSwitchMode switchMode)
+SwitchProcessor::SwitchProcessor() : SwitchProcessor::SwitchProcessor(EnumSwitchMode::Latching, HIGH) {}
+SwitchProcessor::SwitchProcessor(EnumSwitchMode switchMode) : SwitchProcessor::SwitchProcessor(switchMode, HIGH) {}
+SwitchProcessor::SwitchProcessor(int iOnState) : SwitchProcessor::SwitchProcessor(EnumSwitchMode::Latching, iOnState){}
+
+SwitchProcessor::SwitchProcessor(EnumSwitchMode switchMode, int iOnState)
 {
   _switchMode = switchMode;
+  _iOnState = iOnState;
 }
+#pragma endregion
 
+// Changes the mode of the processor, to handle latching or momentary switching
 void SwitchProcessor::ChangeMode(EnumSwitchMode switchMode)
 {
   _switchMode = switchMode;
 }
 
-bool SwitchProcessor::GetState(int iPin)
+// Returns the state of the switch, based on the switch mode
+EnumSwitchMode SwitchProcessor::GetState(int iPin)
 {
-  // read the state for the pin
+  // read the initial state of the pin
   int iReadState = digitalRead(iPin);
 
   // if the state changed since the last read
@@ -39,10 +44,11 @@ bool SwitchProcessor::GetState(int iPin)
       // update the state
       _iButtonState = iReadState;
 
-      // if the state is high, we need to switch the light on
+      // if the state is low, we need to switch the light on
       if (_iButtonState == LOW)
       {
-        _bLEDState = !_bLEDState;
+        // flip our state
+        _bSwitchState = !_bSwitchState;
       }
     }
   }
@@ -54,12 +60,17 @@ bool SwitchProcessor::GetState(int iPin)
   if (_switchMode == EnumSwitchMode::Momentary)
   {
     if (iReadState == HIGH)
-      return false;
-
-    return true;
+    {
+      return EnumSwitchMode::Momentary;
+    }
+    
+    return EnumSwitchMode::Latching;
   }
 
-  return _bLEDState;
+  if (_bSwitchState)
+    return EnumSwitchMode::Momentary;
+  else
+    return EnumSwitchMode::Latching;
 }
 
 #endif
