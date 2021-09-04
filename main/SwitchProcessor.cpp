@@ -40,7 +40,7 @@ bool SwitchProcessor::GetState(int iPin)
       _iButtonState = iReadState;
 
       // if the state is high, we need to switch the light on
-      if (_iButtonState == HIGH)
+      if (_iButtonState == LOW)
       {
         _bLEDState = !_bLEDState;
       }
@@ -54,9 +54,9 @@ bool SwitchProcessor::GetState(int iPin)
   if (_switchMode == EnumSwitchMode::Momentary)
   {
     if (iReadState == HIGH)
-      return true;
+      return false;
 
-    return false;
+    return true;
   }
 
   return _bLEDState;

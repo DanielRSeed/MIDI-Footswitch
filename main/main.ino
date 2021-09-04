@@ -1,3 +1,7 @@
+#include <MIDI.h>
+
+MIDI_CREATE_DEFAULT_INSTANCE();
+
 #include "libraries/enums/EnumSwitchMode.h"
 #include "libraries/SwitchProcessor/SwitchProcessor.h"
 #include "libraries/Switch/Switch.h"
@@ -11,9 +15,13 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
 
   _switch = new Switch(2, INPUT_PULLUP, EnumSwitchMode::Momentary);
-  _switchModeSelect = new Switch(7, INPUT_PULLUP, EnumSwitchMode::Latching);
+  _switchModeSelect = new Switch(3, INPUT_PULLUP, EnumSwitchMode::Latching);
+
+  Serial.begin(9600);
+  MIDI.begin(MIDI_CHANNEL_OFF);
 }
 
+bool _bLastState = true;
 void loop()
 {
   bool bSwitchState = _switchModeSelect->GetState();
@@ -25,8 +33,27 @@ void loop()
 
   bool bState = _switch->GetState();
 
-  if (!bState)
+  if (bState == _bLastState)
+    return;
+
+  if (bState)
+  {
     digitalWrite(LED_BUILTIN, HIGH);
+    //MIDI.sendProgramChange(30, 1);
+
+    //Serial.print("hit");
+    MIDI.sendControlChange(49, 127, 1);
+
+    // if(!bSwitchState)
+    MIDI.sendControlChange(49, 0, 1);
+  }
   else
+  {
     digitalWrite(LED_BUILTIN, LOW);
+    //MIDI.sendControlChange(68, 0, 4);
+       // MIDI.sendProgramChange(100, 1);
+    //MIDI.sendControlChange(49, 0, 1);
+  }
+
+  _bLastState = bState;
 }
